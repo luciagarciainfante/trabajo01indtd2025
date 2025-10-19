@@ -71,6 +71,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="inidiv_soluciones_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="inidiv_soluciones_files/libs/bootstrap/bootstrap-bb462d781dde1847d9e3ccf7736099dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -184,6 +213,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div style="page-break-after: always;"></div>
 <p><strong>1. Método de Wald</strong></p>
+<p>Para cada alternativa se supone que va a pasar lo peor, y elige aquella alternativa que dé mejor valor.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">=</span> <span class="fu">criterio.Wald</span>(tb01a,<span class="at">favorable=</span><span class="cn">TRUE</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(b1<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -192,6 +222,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p><strong>2. Método Optimista</strong></p>
+<p>Para cada alternativa se supone que pasará lo mejor, y se elige laa que dé mejor valor.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">=</span> <span class="fu">criterio.Optimista</span>(tb01a,<span class="at">favorable =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(b2<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -200,6 +231,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p><strong>3. Método Hurwicz</strong></p>
+<p>Combina optimismo y pesimismo usando un coeficiente de optimismo <span class="math inline">\(\alpha\)</span>:</p>
+<p><span class="math display">\[
+\text{Valor Hurwicz} = \alpha \cdot \max + (1-\alpha) \cdot \min
+\]</span> Resolvemos considerando <span class="math inline">\(\alpha\)</span> = 0.5.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>b3 <span class="ot">=</span> <span class="fu">criterio.Hurwicz</span>(tb01a,<span class="at">alfa=</span><span class="fl">0.5</span>,<span class="at">favorable=</span><span class="cn">TRUE</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(b3<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -207,27 +242,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] "d3" "d4"</code></pre>
 </div>
 </div>
-<p><strong>4. Método Savage</strong></p>
+<p>Ahora vamos a hacer un análisis de la decisiones en función del <span class="math inline">\(\alpha\)</span>. Para ello disponemos de dos funciones, una que te hace la gráfica, y otra que además te da los intervalos. Usamos la completa:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>b4 <span class="ot">=</span> <span class="fu">criterio.Savage</span>(tb01a,<span class="at">favorable=</span><span class="cn">TRUE</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(b4<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dibuja.criterio.Hurwicz_Intervalos</span>(tb01a,T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="inidiv_soluciones_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$AltOptimas
+[1] 2 4 3
+
+$PuntosDeCorte
+[1] 0.375 0.500
+
+$IntervalosAlfa
+           Intervalo         Alternativa
+Soluciones "( 0 , 0.375 )"   "2"        
+           "( 0.375 , 0.5 )" "4"        
+           "( 0.5 , 1 )"     "3"        </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Interpretación:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para valores de <span class="math inline">\(\alpha\)</span> entre 0 y 0.375, se elegirá la alternativa 2. Para valores entre 0.375 y 0.5 se elegirá la alternativa 4. Para valores entre 0.5 1, elegiremos la 3.</p>
+<p>Vemos que efectivamente tenemos el mismo resultado que el obtenido al principio. Justo el <span class="math inline">\(\alpha\)</span> = 0.5 es el punto de corte entre las rectas. Por eso nos salen dos alternativas.</p>
+</div>
+</div>
+<p><strong>4. Método Savage</strong></p>
+<p>Minimiza el arrepentimiento máximo comparando lo que se pudo ganar y lo que se ganó.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>b4 <span class="ot">=</span> <span class="fu">criterio.Savage</span>(tb01a,<span class="at">favorable=</span><span class="cn">TRUE</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(b4<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "d2"</code></pre>
 </div>
 </div>
 <p><strong>5. Método Laplace</strong></p>
+<p>Asume que todos los estados son igualmente probables y elige la alternativa con mayor promedio.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>b5 <span class="ot">=</span> <span class="fu">criterio.Laplace</span>(tb01a,<span class="at">favorable=</span><span class="cn">TRUE</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(b5<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>b5 <span class="ot">=</span> <span class="fu">criterio.Laplace</span>(tb01a,<span class="at">favorable=</span><span class="cn">TRUE</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(b5<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "d3"</code></pre>
 </div>
 </div>
-<div style="page-break-after: always;"></div>
-<p><strong>6. Método Punto Ideal</strong></p>
+<p><strong>6. Método Punto Ideal</strong> Considera un resultado perfecto y mide la distancia de cada alternativa a ese ideal, eligiendo la más cercana.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>b6 <span class="ot">=</span> <span class="fu">criterio.PuntoIdeal</span>(tb01a,<span class="at">favorable=</span><span class="cn">TRUE</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(b6<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>b6 <span class="ot">=</span> <span class="fu">criterio.PuntoIdeal</span>(tb01a,<span class="at">favorable=</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(b6<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "d2"</code></pre>
 </div>
@@ -250,50 +324,81 @@ Conclusiones:
 <section id="apartado-b.-tabla-correspondiente-a-costes." class="level2">
 <h2 class="anchored" data-anchor-id="apartado-b.-tabla-correspondiente-a-costes.">Apartado b. Tabla correspondiente a costes.</h2>
 <p><strong>1. Método de Wald</strong></p>
+<p>Para cada alternativa se supone que va a pasar lo peor, y elige aquella alternativa que dé mejor valor.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>c1 <span class="ot">=</span> <span class="fu">criterio.Wald</span>(tb01a,<span class="at">favorable=</span><span class="cn">FALSE</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c1<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>c1 <span class="ot">=</span> <span class="fu">criterio.Wald</span>(tb01a,<span class="at">favorable=</span><span class="cn">FALSE</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c1<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "d1"</code></pre>
 </div>
 </div>
 <p><strong>2. Método Optimista</strong></p>
+<p>Para cada alternativa se supone que pasará lo mejor, y se elige laa que dé mejor valor.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>c2 <span class="ot">=</span> <span class="fu">criterio.Optimista</span>(tb01a,<span class="at">favorable =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c2<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>c2 <span class="ot">=</span> <span class="fu">criterio.Optimista</span>(tb01a,<span class="at">favorable =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c2<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "d1" "d3" "d5"</code></pre>
 </div>
 </div>
 <p><strong>3. Método Hurwicz</strong></p>
+<p>Combina optimismo y pesimismo usando un coeficiente de optimismo <span class="math inline">\(\alpha\)</span>:</p>
+<p><span class="math display">\[
+\text{Valor Hurwicz} = \alpha \cdot \max + (1-\alpha) \cdot \min
+\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>c3 <span class="ot">=</span> <span class="fu">criterio.Hurwicz</span>(tb01a,<span class="at">alfa=</span><span class="fl">0.5</span>,<span class="at">favorable=</span><span class="cn">FALSE</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c3<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>c3 <span class="ot">=</span> <span class="fu">criterio.Hurwicz</span>(tb01a,<span class="at">alfa=</span><span class="fl">0.5</span>,<span class="at">favorable=</span><span class="cn">FALSE</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c3<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "d1"</code></pre>
 </div>
 </div>
-<p><strong>4. Método Savage</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>c4 <span class="ot">=</span> <span class="fu">criterio.Savage</span>(tb01a,<span class="at">favorable=</span><span class="cn">FALSE</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c4<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dibuja.criterio.Hurwicz</span>(tb01a, <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="inidiv_soluciones_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Interpretación:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En este caso, por estar en el caso de costes, debemos mirar la línea más baja. Vemos que para cualquier nivel de alpha, la decisión elegida es la d1. Vemos que efectivamente tenemos el mismo resultado que el obtenido al principio.</p>
+</div>
+</div>
+<p><strong>4. Método Savage</strong></p>
+<p>Minimiza el arrepentimiento máximo, que se calcula a partir del coste extra que se podría haber evitado.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>c4 <span class="ot">=</span> <span class="fu">criterio.Savage</span>(tb01a,<span class="at">favorable=</span><span class="cn">FALSE</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c4<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "d5"</code></pre>
 </div>
 </div>
 <p><strong>5. Método Laplace</strong></p>
+<p>Calcula el promedio de costes suponiendo igual probabilidad para cada estado.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>c5 <span class="ot">=</span> <span class="fu">criterio.Laplace</span>(tb01a,<span class="at">favorable=</span><span class="cn">FALSE</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c5<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>c5 <span class="ot">=</span> <span class="fu">criterio.Laplace</span>(tb01a,<span class="at">favorable=</span><span class="cn">FALSE</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c5<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "d1"</code></pre>
 </div>
 </div>
-<div style="page-break-after: always;"></div>
 <p><strong>6. Método Punto Ideal</strong></p>
+<p>Compara la distancia a un coste ideal mínimo, eligiendo el más cercano al ideal (menor coste).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>c6 <span class="ot">=</span> <span class="fu">criterio.PuntoIdeal</span>(tb01a,<span class="at">favorable=</span><span class="cn">FALSE</span>)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c6<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>c6 <span class="ot">=</span> <span class="fu">criterio.PuntoIdeal</span>(tb01a,<span class="at">favorable=</span><span class="cn">FALSE</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(c6<span class="sc">$</span>AlternativaOptima)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "d1"</code></pre>
 </div>
@@ -314,6 +419,105 @@ Conclusiones:
 </div>
 <div style="page-break-after: always;"></div>
 </section>
+</section>
+<section id="ejercicio-2" class="level1">
+<h1>EJERCICIO 2</h1>
+<p>Marina es una alumna del grado en Estadística que acaba este año. El próximo año quiere realizar un máster para mejorar sus oportunidades laborales, pero solo puede escoger uno. Todavía no sabe en qué sitio empezará a trabajar aunque considera tres posibilidades:</p>
+<ul>
+<li>Una <strong>empresa privada en el extranjero</strong>.</li>
+<li>Una <strong>institución pública</strong>.</li>
+<li>Una <strong>empresa privada española</strong>.</li>
+</ul>
+<p>Para decidir, Marina ha mirado tres másteres que le interesan y ha estimado cuál podría ser su primer sueldo anual según el tipo de empresa, junto con el coste de cada máster:</p>
+<ul>
+<li><strong>Máster en Análisis de Datos</strong>. Espera ganar unos 26.000 € en una empresa extranjera, 18.000 € en una institución pública y 20.000 € en una empresa española. Este máster tiene un coste de 10.000 €.</li>
+<li><strong>Máster en Programación y Modelos Estadístico</strong>. Estima que su sueldo inicial sería de 20.000 € en una empresa extranjera, 12.000 € en una institución pública y 20.000 € en una empresa privada española. El coste de este máster asciende a 6.500 €.</li>
+<li><strong>Máster en Comunicación y Gestión de Proyectos</strong>. Espera un sueldo de 10.000 € en una empresa extranjera, 12.000 € en una institución pública y 20.000 € en una empresa privada española. Este máster tiene un coste de 3.000 €.</li>
+</ul>
+<p><strong>Solución:</strong></p>
+<p>PLANTEAMIENTO:</p>
+<ul>
+<li>Un decisor: Marina.</li>
+<li>Modelo de beneficios (favorable).</li>
+<li>Alternativas:
+<ul>
+<li>A1 = Máster en Análisis de Datos</li>
+<li>A2 = Máster en Programación y Modelos Estadísticos</li>
+<li>A3 = Máster en Comunicación y Gestión de Proyectos</li>
+</ul></li>
+<li>Estados de la naturaleza:
+<ul>
+<li>E1 = Empresa extranjera</li>
+<li>E2 = Institución pública</li>
+<li>E3 = Empresa privada española</li>
+</ul></li>
+<li>Matriz de decisión: Beneficios = Sueldo esperado - Coste máster</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Máster en Análisis de Datos</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>m11 <span class="ot">=</span> <span class="dv">26000</span> <span class="sc">-</span> <span class="dv">10000</span>   <span class="co"># Empresa extranjera</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>m12 <span class="ot">=</span> <span class="dv">18000</span> <span class="sc">-</span> <span class="dv">10000</span>   <span class="co"># Institución pública</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>m13 <span class="ot">=</span> <span class="dv">20000</span> <span class="sc">-</span> <span class="dv">10000</span>   <span class="co"># Empresa española</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Máster en Programación y Modelos Estadísticos</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>m21 <span class="ot">=</span> <span class="dv">20000</span> <span class="sc">-</span> <span class="dv">6500</span>  <span class="co"># Empresa extranjera</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>m22 <span class="ot">=</span> <span class="dv">12000</span> <span class="sc">-</span> <span class="dv">6500</span>  <span class="co"># Institución pública</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>m23 <span class="ot">=</span> <span class="dv">20000</span> <span class="sc">-</span> <span class="dv">6500</span>  <span class="co"># Empresa españolaA</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Máster en Comunicación y Gestión de Proyectos</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>m31 <span class="ot">=</span> <span class="dv">10000</span> <span class="sc">-</span> <span class="dv">3000</span>  <span class="co"># Empresa extranjera</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>m32 <span class="ot">=</span> <span class="dv">12000</span> <span class="sc">-</span> <span class="dv">3000</span>  <span class="co"># Institución pública</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>m33 <span class="ot">=</span> <span class="dv">20000</span> <span class="sc">-</span> <span class="dv">3000</span>  <span class="co"># Empresa española</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Inserto los datos en la tabla:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>tb02 <span class="ot">=</span> <span class="fu">crea.tablaX</span>(<span class="fu">c</span>(m11,m12,m13,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                     m21,m22,m23,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                     m31,m32,m33),</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">numalternativas =</span> <span class="dv">3</span>, <span class="at">numestados =</span> <span class="dv">3</span>,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">nb_alternativas =</span> <span class="fu">c</span>(<span class="st">"A1"</span>,<span class="st">"A2"</span>,<span class="st">"A3"</span>),</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">nb_estados =</span> <span class="fu">c</span>(<span class="st">"E1"</span>,<span class="st">"E2"</span>,<span class="st">"E3"</span>))</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>tb02</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      E1   E2    E3
+A1 16000 8000 10000
+A2 13500 5500 13500
+A3  7000 9000 17000</code></pre>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+<p>Aplico la función que devuelve todos los métodos en una única tabla:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>sol02 <span class="ot">=</span> <span class="fu">criterio.Todos</span>(tb02, <span class="at">alfa=</span><span class="fl">0.5</span>, <span class="at">favorable=</span><span class="cn">TRUE</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>sol02</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   E1   E2    E3 Wald Optimista Hurwicz Savage Laplace
+A1              16000 8000 10000 8000     16000   12000   7000   11333
+A2              13500 5500 13500 5500     13500    9500   3500   10833
+A3               7000 9000 17000 7000     17000   12000   9000   11000
+iAlt.Opt (fav.)    --   --    --   A1        A3   A1,A3     A2      A1
+                Punto Ideal Veces Optima
+A1                     7071            3
+A2                     5545            2
+A3                     9000            2
+iAlt.Opt (fav.)          A2           A1</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Conclusiones:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La alternativa A1 es la opción más recomendada, ya que resulta óptima en la mayoría de los criterios (3 veces).</p>
+<p>Por tanto, Marina debería estudiar el próximo año el Máster en Análisis de Datos.</p>
+</div>
+</div>
 </section>
 
 </main>
