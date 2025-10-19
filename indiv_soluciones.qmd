@@ -151,6 +151,7 @@ $$
 c3 = criterio.Hurwicz(tb01a,alfa=0.5,favorable=FALSE)
 names(c3$AlternativaOptima)
 ```
+
 ```{r}
 dibuja.criterio.Hurwicz(tb01a, FALSE)
 ```
