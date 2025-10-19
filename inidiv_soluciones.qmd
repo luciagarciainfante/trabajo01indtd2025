@@ -6,6 +6,11 @@ format:
   pdf: default
 ---
 
+```{r}
+source("teoriadecision_funciones_incertidumbre.R")
+```
+
+
 # EJERCICIO 1. 
 Aplicar los criterios de decisión bajo incertidumbre al siguiente problema considerando una situación favorable (beneficios) y desfavorable (costos)
 
@@ -16,4 +21,109 @@ Aplicar los criterios de decisión bajo incertidumbre al siguiente problema cons
 | d3 | 120 | 300 | 260 | 400 | 100 | 330 |
 | d4 | 180 | 130 | 300 | 370 | 280 | 190 |
 | d5 | 200 | 140 | 135 | 280 | 190 | 100 |
+
+
+
+## Apartado a. Tabla correspondiente a beneficios. 
+
+```{r}
+tb01a = crea.tablaX(c(100,200,130,150,240,100,
+                      300,145,230,345,200,280,
+                      120,300,260,400,100,330,
+                      180,130,300,370,280,190,
+                      200,140,135,280,190,100),
+                    numalternativas = 5, numestados = 6)
+```
+\pagebreak
+
+**1. Método de Wald**
+```{r}
+b1 = criterio.Wald(tb01a,favorable=TRUE)
+names(b1$AlternativaOptima)
+```
+**2. Método Optimista**
+```{r}
+b2 = criterio.Optimista(tb01a,favorable = TRUE)
+names(b2$AlternativaOptima)
+```
+**3. Método Hurwicz**
+```{r}
+b3 = criterio.Hurwicz(tb01a,alfa=0.5,favorable=TRUE)
+names(b3$AlternativaOptima)
+```
+**4. Método Savage**
+```{r}
+b4 = criterio.Savage(tb01a,favorable=TRUE)
+names(b4$AlternativaOptima)
+```
+**5. Método Laplace**
+```{r}
+b5 = criterio.Laplace(tb01a,favorable=TRUE)
+names(b5$AlternativaOptima)
+```
+\pagebreak
+
+**6. Método Punto Ideal**
+```{r}
+b6 = criterio.PuntoIdeal(tb01a,favorable=TRUE)
+names(b6$AlternativaOptima)
+```
+:::{.callout-tip}
+### Conclusiones: 
+Tomando los datos de la tabla como beneficios, los resultados que obtenemos son: La decisión 1 y la 5 no se eligen en ningún método. La 2 y la 3 empatan siendo elegidas por 3 métodos. Y la decisión 4 sólo aparece en 1. 
+Por tanto, las mejores decisiones en este caso son la 2 y la 3.
+:::
+
+\pagebreak
+
+## Apartado b. Tabla correspondiente a costes. 
+
+**1. Método de Wald**
+```{r}
+c1 = criterio.Wald(tb01a,favorable=FALSE)
+names(c1$AlternativaOptima)
+```
+
+**2. Método Optimista**
+```{r}
+c2 = criterio.Optimista(tb01a,favorable = FALSE)
+names(c2$AlternativaOptima)
+```
+
+**3. Método Hurwicz**
+```{r}
+c3 = criterio.Hurwicz(tb01a,alfa=0.5,favorable=FALSE)
+names(c3$AlternativaOptima)
+```
+
+**4. Método Savage**
+```{r}
+c4 = criterio.Savage(tb01a,favorable=FALSE)
+names(c4$AlternativaOptima)
+```
+
+**5. Método Laplace**
+```{r}
+c5 = criterio.Laplace(tb01a,favorable=FALSE)
+names(c5$AlternativaOptima)
+```
+
+\pagebreak
+
+**6. Método Punto Ideal**
+```{r}
+c6 = criterio.PuntoIdeal(tb01a,favorable=FALSE)
+names(c6$AlternativaOptima)
+```
+
+
+:::{.callout-tip}
+### Conclusiones: 
+Tomando los datos de la tabla como costes, los resultados que obtenemos son: La decisión 2 y la 4 no se eligen en ningún método. La 3 es elegida una única vez y la 5, dos veces. La decisión 1 es la que más veces es elegida por 5 métodos. 
+
+Por tanto, la mejor decisión en este caso es la 1.
+:::
+
+
+\pagebreak
 
