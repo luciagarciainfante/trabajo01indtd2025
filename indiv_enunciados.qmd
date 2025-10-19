@@ -1,0 +1,8 @@
+---
+title: "Trabajo 1. Teoría de la Decisión. Enunciados"
+author: "Lucía García Infante"
+format:
+  html: default
+  pdf: default
+---
+
