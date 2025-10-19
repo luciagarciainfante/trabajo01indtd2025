@@ -145,6 +145,65 @@ Para decidir, Marina ha mirado tres másteres que le interesan y ha estimado cu�
 - **Máster en Comunicación y Gestión de Proyectos**. Espera un sueldo de 10.000 € en una empresa extranjera, 12.000 € en una institución pública y 20.000 € en una empresa privada española. Este máster tiene un coste de 3.000 €.
 
 
+**Solución:**
+
+PLANTEAMIENTO:
+
+- Un decisor: Marina.
+- Modelo de beneficios (favorable).
+- Alternativas:
+  - d1 = Máster en Análisis de Datos
+  - d2 = Máster en Programación y Modelos Estadísticos
+  - d3 = Máster en Comunicación y Gestión de Proyectos
+- Estados de la naturaleza:
+  - e1 = Empresa extranjera
+  - e2 = Institución pública
+  - e3 = Empresa privada española
+- Matriz de decisión:  Beneficios = Sueldo esperado - Coste máster
+
+```{r}
+# Máster en Analisis de Datos
+m11 = 26000 - 10000   # Empresa extranjera
+m12 = 18000 - 10000   # Institución pública
+m13 = 20000 - 10000   # Empresa española
+
+# Máster en Programación y Modelos Estadísticos
+m21 = 20000 - 6500  # Empresa extranjera
+m22 = 12000 - 6500  # Institución pública
+m23 = 20000 - 6500  # Empresa españolaA
+
+# Máster en Comunicación y Gestión de Proyectos
+m31 = 10000 - 3000  # Empresa extranjera
+m32 = 12000 - 3000  # Institución pública
+m33 = 20000 - 3000  # Empresa española
+
+```
+
+Inserto los datos en la tabla: 
+```{r}
+tb02 = crea.tablaX(c(m11,m12,m13,
+                     m21,m22,m23,
+                     m31,m32,m33),
+    numalternativas = 3, numestados = 3,
+    nb_alternativas = c("A1","A2","A3"),
+    nb_estados = c("E1","E2","E3"))
+
+tb02
+```
+
+Aplico la función que devuelve todos los métodos en una única tabla: 
+
+```{r}
+sol02 = criterio.Todos(tb02, alfa=0.5, favorable=TRUE)
+sol02
+```
+
+:::{.callout-tip}
+### Conclusiones: 
+La alternativa A1 (Máster en Análisis de Datos) es la opción más recomendada, ya que resulta óptima en la mayoría de los criterios (3 veces).
+:::
+
+
 
 
 
