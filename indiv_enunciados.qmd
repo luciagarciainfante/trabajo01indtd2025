@@ -18,3 +18,22 @@ Aplicar los criterios de decisión bajo incertidumbre al siguiente problema cons
 | d5 | 200 | 140 | 135 | 280 | 190 | 100 |
 
 
+
+# EJERCICIO 2
+
+Marina es una alumna del grado en Estadística que acaba este año. El próximo año quiere realizar un máster para mejorar sus oportunidades laborales, pero solo puede escoger uno.
+Todavía no sabe en qué sitio empezará a trabajar aunque considera tres posibilidades:
+
+- Una institución pública.
+- Una empresa privada española.
+- Una empresa privada en el extranjero.
+
+
+Para decidir, Sofía ha mirado tres másteres que le interesan y ha estimado cuál podría ser su primer sueldo anual según el tipo de empresa, junto con el coste de cada máster:
+
+- Máster en Análisis de Datos. Espera ganar unos 26.000 € en una empresa extranjera, 18.000 € en una institución pública y 20.000 € en una empresa española. Este máster tiene un coste de 10.000 €.
+- Máster en Programación y Modelos Estadísticos. Estima que su sueldo inicial sería de 20.000 € en una empresa extranjera, 12.000 € en una institución pública y 20.000 € en una empresa privada española. El coste de este máster asciende a 6.500 €.
+- Máster en Comunicación y Gestión de Proyectos. Espera un sueldo de 10.000 € en una empresa extranjera, 12.000 € en una institución pública y 20.000 € en una empresa privada española. Este máster tiene un coste de 3.000 €.
+
+
+
